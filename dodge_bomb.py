@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import pygame as pg
+import time
 
 
 WIDTH, HEIGHT = 1100, 650
@@ -34,6 +35,7 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
+    kkc_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
 
@@ -50,7 +52,22 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
+        
+
         screen.blit(bg_img, [0, 0]) 
+
+        if kk_rct.colliderect(bb_rct): # こうかとんと爆弾が重なった場合
+            backg = pg.Surface((1100, 650))
+            backg.set_alpha(128)
+            backg.fill((0, 0, 0))
+            screen.blit(backg, (0, 0))
+            fonto = pg.font.Font(None, 80)
+            txt = fonto.render("Game Over!", True, (255, 255, 255))
+            screen.blit(txt, [400, 200])
+            screen.blit(kkc_img,[345, 200])
+            screen.blit(kkc_img, [745,200])
+            pg.display.update()
+            time.sleep(5)
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0] # 横座標, 縦座標
@@ -70,12 +87,10 @@ def main():
                 sum_mv[1] += tpl[1] # 縦方向
 
         kk_rct.move_ip(sum_mv)
+        
         if check_bpund(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
-        screen.blit(kk_img, kk_rct)
-        if kk_rct.colliderect(bb_rct): # こうかとんと爆弾が重なった場合
-            print("GameOver!")
-            return
+        screen.blit(kk_img, kk_rct)    
 
         bb_rct.move_ip((vx, vy))
         yoko, tate = check_bpund(bb_rct)
