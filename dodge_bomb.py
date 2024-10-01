@@ -73,6 +73,9 @@ def main():
         if check_bpund(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
         screen.blit(kk_img, kk_rct)
+        if kk_rct.colliderect(bb_rct): # こうかとんと爆弾が重なった場合
+            print("GameOver!")
+            return
 
         bb_rct.move_ip((vx, vy))
         yoko, tate = check_bpund(bb_rct)
