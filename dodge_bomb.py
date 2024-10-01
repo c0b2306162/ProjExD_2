@@ -29,7 +29,7 @@ def check_bpund(obj_rct:pg.Rect) -> tuple[bool, bool]:
         tate = False 
     return yoko, tate
 
-def create_bomb():
+def create_bomb(): # 演習１：時間に対して拡大、加速
     accs = [a for a in range(1, 11)]
     bb_imgs = []
     for r in range(1, 11):
@@ -38,6 +38,24 @@ def create_bomb():
         bb_img.set_colorkey((0,0,0))
         bb_imgs.append(bb_img)
     return accs, bb_imgs   
+
+def kk_rotozoom_img(kk_img): # 演習２：飛行方向に従った画像を返す関数 
+    """
+    押下キーに応じた移動量に対応する角度と拡大縮小を適用したSurfaceを生成する
+    移動量の合計値タプルをキー、rotozoomされたSurfaceを値とした辞書を返す
+    """
+    kk_img_dict = { # 演習３：途中
+        (0, -5): pg.transform.rotozoom(kk_img, 180, 1.0),   # 上
+        (0, +5): pg.transform.rotozoom(kk_img, 90, 1.0),  # 下
+        (-5, 0): pg.transform.rotozoom(kk_img, 0, 1.0),   # 左
+        (+5, 0): pg.transform.flip(kk_img, True, False),  # 右
+        (-5, -5): pg.transform.rotozoom(kk_img, 45, 1.0),  # 左上
+        (+5, -5): pg.transform.rotozoom(kk_img, -45, 1.0), # 右上
+        (-5, +5): pg.transform.rotozoom(kk_img, 135, 1.0), # 左下
+        (+5, +5): pg.transform.rotozoom(kk_img, -135, 1.0) # 右下
+    }
+    return kk_img_dict
+
 
 
 
@@ -58,7 +76,7 @@ def main():
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
 
     accs, bb_imgs = create_bomb()
-
+    rotozoom_img = kk_rotozoom_img(kk_img)
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -101,13 +119,15 @@ def main():
                 sum_mv[1] += tpl[1] # 縦方向
 
         kk_rct.move_ip(sum_mv)
-        
+        img_key =(sum_mv[0], sum_mv[1])if (sum_mv[0], sum_mv[1]) in rotozoom_img else (0,0)
+        screen.blit(rotozoom_img.get(img_key, kk_img), kk_rct)
+
         avx = vx*accs[min(tmr//500, 9)] # 位置の加速度
         avy = vy*accs[min(tmr//500, 9)]
 
         if check_bpund(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0],-sum_mv[1])
-        screen.blit(kk_img, kk_rct)
+        #screen.blit(kk_img, kk_rct)
         bb_rct.move_ip((avx, avy))
         yoko, tate = check_bpund(bb_rct)
         if not yoko:
