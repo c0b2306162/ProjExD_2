@@ -49,10 +49,10 @@ def kk_rotozoom_img(kk_img): # 演習２：飛行方向に従った画像を返�
         (0, +5): pg.transform.rotozoom(kk_img, 90, 1.0),  # 下
         (-5, 0): pg.transform.rotozoom(kk_img, 0, 1.0),   # 左
         (+5, 0): pg.transform.flip(kk_img, True, False),  # 右
-        (-5, -5): pg.transform.rotozoom(kk_img, 45, 1.0),  # 左上
-        (+5, -5): pg.transform.rotozoom(kk_img, -45, 1.0), # 右上
-        (-5, +5): pg.transform.rotozoom(kk_img, 135, 1.0), # 左下
-        (+5, +5): pg.transform.rotozoom(kk_img, -135, 1.0) # 右下
+        (-5, -5): pg.transform.rotozoom(kk_img, -135, 1.0),  # 左上
+        (+5, -5): pg.transform.rotozoom(kk_img, -135, 1.0), # 右上
+        (-5, +5): pg.transform.rotozoom(kk_img, 45, 1.0), # 左下
+        (+5, +5): pg.transform.rotozoom(kk_img, -45, 1.0) # 右下
     }
     return kk_img_dict
 
